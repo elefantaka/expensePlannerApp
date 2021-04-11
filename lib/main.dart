@@ -30,7 +30,8 @@ class MyHomePage extends StatelessWidget {
         appBar: AppBar(
           title: Text('Expense Planner'),
         ),
-        body: Column(
+        body: SingleChildScrollView(
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -44,6 +45,7 @@ class MyHomePage extends StatelessWidget {
             ),
             UserTransactions(),
           ],
-        ));
+        )
+    ));
   }
 }
