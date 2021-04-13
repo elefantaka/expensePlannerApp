@@ -7,7 +7,6 @@ import './models/transaction.dart';
 import './widgets/transaction_list.dart';
 import './widgets/chart.dart';
 
-
 void main() {
   runApp(ExpensePlanner());
 }
@@ -18,12 +17,17 @@ class ExpensePlanner extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Planner',
       theme: ThemeData(
-        primarySwatch: Colors.cyan,
-        accentColor: Colors.purple,
-        fontFamily: 'Quicksand',
-        textTheme: ThemeData.light().textTheme.copyWith(title: TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold, fontSize: 18),),
-        appBarTheme: AppBarTheme(textTheme: ThemeData.light().textTheme.copyWith(title: TextStyle(fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.bold)),)
-      ),
+          primarySwatch: Colors.cyan,
+          accentColor: Colors.purple,
+          errorColor: Colors.red,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold, fontSize: 18),
+                button: TextStyle(color: Colors.white),
+              ),
+          appBarTheme: AppBarTheme(
+            textTheme: ThemeData.light().textTheme.copyWith(title: TextStyle(fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.bold)),
+          )),
       home: MyHomePage(),
     );
   }
@@ -63,8 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
-    final newTx = Transaction(title: txTitle, amount: txAmount, date: DateTime.now(), id: DateTime.now().toString());
+  void _addNewTransaction(String txTitle, double txAmount, DateTime chosenDate) {
+    final newTx = Transaction(title: txTitle, amount: txAmount, date: chosenDate, id: DateTime.now().toString());
 
     setState(() {
       _userTransactions.add(newTx);
@@ -75,9 +79,27 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
       context: ctx,
       builder: (_) {
-        return GestureDetector(onTap: () {}, child: NewTransaction(_addNewTransaction), behavior: HitTestBehavior.opaque,);
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
       },
     );
+  }
+
+  // void _deleteTransaction(String id) {
+  //   setState(() {
+  //     _userTransactions.removeWhere((tx){
+  //       return tx.id == id;
+  //     });
+  //   });
+  // }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
   }
 
   @override
@@ -97,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(_recentTransactions),
-            TransactionList(_userTransactions),
+            TransactionList(_userTransactions, _deleteTransaction),
           ],
         ),
       ),
